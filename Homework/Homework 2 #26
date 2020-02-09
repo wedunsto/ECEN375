@@ -1,0 +1,18 @@
+		MOV		R0, #0x10C ;R0 = array[]
+		MOV		R5, #42 ;the value being searched for
+		STR		R5, [R0, #4] ;store R5 in array[1]
+		MOV		R1, #16 ;R1 = Size
+MAIN		BL		FIND42 ;Call Find42()
+		MOV		R1, R0 ;R1 = returned value
+		END		;End the program flow
+FIND42 ;Find42() method
+		CMP		R1, #0 ;size<=0 ?
+		MOVLS	R0, #-1 ;if(size<=0) return -1
+		MOVLS	PC, LR ;if(size<=0) retrun to caller
+		LDRCS	R2, [R0,R1] ;if(size>0) R2 = array[size]
+		CMPCS	R2, #42 ;array[size] == 42?
+		MOVEQ	R0, R1 ;if(array[size] == 42) return size
+		MOVEQ	PC, LR ;if(array[size] == 42) return to caller
+		SUBNE	R1, R1, #4 ;if(array[size] != 42) size--
+		BLNE		MAIN ;if(array[size] != 42) recursively call find42()
+		MOVNE	PC, LR ;Return to caller
